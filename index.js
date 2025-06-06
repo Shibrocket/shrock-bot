@@ -591,9 +591,28 @@ bot.command('claim', async (ctx) => {
 
 // /referral command
 bot.command('referral', async (ctx) => {
-  const userId = ctx.from.id;
+  const userId = ctx.from.id.toString();
   const referralLink = `https://t.me/ShibaRocket_OfficialBot?start=${userId}`;
-  ctx.reply(`📢 Share your referral link:\n${referralLink}\n\nEarn $SHROCK when your friends join!`);
+
+  // Escape MarkdownV2 characters
+  const escapedLink = referralLink
+    .replace(/\./g, '\\.')
+    .replace(/\?/g, '\\?')
+    .replace(/\=/g, '\\=')
+    .replace(/\-/g, '\\-')
+    .replace(/\_/g, '\\_');
+
+  const rawLink = `https://t.me/ShibaRocket_OfficialBot?start=${userId}`; // unescaped for hyperlink target
+
+  const message = 
+    '*📢 Refer & Earn SHROCK\\!*\\n\\n' +
+    '💸 You will earn *300\\,000 SHROCK* for every friend who joins\\!\\n' +
+    '🎁 Your friend also gets *150\\,000 SHROCK* when they join using your link\\!\\n\\n' +
+    '🔗 *Your Referral Link:*\\n' +
+    `[${escapedLink}](${rawLink})\\n\\n` +
+    'Share this link on Twitter\\, Telegram groups\\, or with friends to boost your balance fast\\!';
+
+  ctx.reply(message, { parse_mode: 'MarkdownV2' });
 });
 
 bot.command('getid', (ctx) => {
